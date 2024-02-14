@@ -26,8 +26,7 @@ jobs:
     steps:
       # run steps required in the workflow
       - run: |
-          apt-get update
-          apt-get install --yes --no-install-recommends postgresql-client
+          sudo apt-get update && sudo apt-get install --yes --no-install-recommends postgresql-client
       - run: |
           psql -h postgres -U postgres -d example -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null);'
       - uses: actions/checkout@v4
