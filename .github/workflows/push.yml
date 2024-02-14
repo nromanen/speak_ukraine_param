@@ -11,9 +11,9 @@ jobs:
         image: postgres
 
         env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: mypass
+          POSTGRES_USER: myuser
+          POSTGRES_DB: example
 
         options: >-
           --health-cmd pg_isready
@@ -26,10 +26,10 @@ jobs:
     steps:
       # run steps required in the workflow
       - uses: actions/checkout@v3
-      - name: Setup Java 17
+      - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
           cache: 'maven'
       - name: Build with Maven
