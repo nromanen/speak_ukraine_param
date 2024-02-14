@@ -28,7 +28,9 @@ jobs:
       - run: |
           sudo apt-get update && sudo apt-get install --yes --no-install-recommends postgresql-client
       - run: |
-          psql -h postgres -U postgres -d example -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null);'
+          psql -h localhost -U myuser -d example -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null);'
+        env:
+          PGPASSWORD: mypass
       - uses: actions/checkout@v4
       - name: Setup Java 21
         uses: actions/setup-java@v4
