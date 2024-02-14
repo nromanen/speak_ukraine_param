@@ -12,7 +12,7 @@ jobs:
 
         env:
           POSTGRES_PASSWORD: mypass
-          POSTGRES_USER: postgres
+          POSTGRES_USER: myuser
           POSTGRES_DB: example
 
         options: >-
