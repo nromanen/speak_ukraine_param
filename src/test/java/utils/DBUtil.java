@@ -13,7 +13,7 @@ import java.util.List;
 public class DBUtil {
     public static Connection getConnection() throws SQLException {
         return DriverManager
-                .getConnection("jdbc:postgresql://localhost:5432/example", "postgres", "mypass");
+                .getConnection("jdbc:postgresql://localhost:5432/example", "myuser", "mypass");
     }
 
     public static int executeStatement(String query) throws SQLException {

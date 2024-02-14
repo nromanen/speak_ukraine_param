@@ -25,6 +25,12 @@ jobs:
 
     steps:
       # run steps required in the workflow
+      - name: Create database
+        run: |
+          createuser myuser
+          createdb --owner myuser example
+          psql -c "ALTER USER myuser WITH PASSWORD 'mypass'"
+          PGPASSWORD=mypass psql -U postgres -tc "create table categories (id bigserial primary key, avatar varchar not null, title varchar not null)"
       - uses: actions/checkout@v4
       - name: Setup Java 21
         uses: actions/setup-java@v4
