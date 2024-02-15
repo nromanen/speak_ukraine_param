@@ -53,7 +53,7 @@ jobs:
         if: success() || failure()
         with:
           name: jacoco-report
-          path: target/site/jacoco/index.html
+          path: '**/target/site/jacoco/index.html'
 #      - name: Checkout repository
 #        uses: actions/checkout@v3
 #
