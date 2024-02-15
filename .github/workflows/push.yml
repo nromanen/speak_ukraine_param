@@ -92,7 +92,7 @@ jobs:
       #     sys.exit(0)
       #   shell: python
       - name: Publish test coverage results
-        uses: PavanMudigonda/jacoco-reporter@v4.8
+        uses: PavanMudigonda/jacoco-reporter@v4.9
         if: success() || failure()
         with:
           coverage_results_path: 'target/site/jacoco/jacoco.xml'
