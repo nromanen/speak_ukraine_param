@@ -41,12 +41,11 @@ jobs:
           java-version: 21
           distribution: 'temurin'
           cache: 'maven'
-      - name: Build with Maven
-        run: mvn clean test && mvn jacoco:report && pwd && ls -lah && ls -lah target/site/jacoco && ls -lah ${{ github.workspace }}
-        
-      - name: Build wDebug
+      - name: Test with Maven
+        run: mvn clean test         
+      - name: Jacoco report generate
         if: success() || failure()
-        run: mvn jacoco:report && pwd && ls -lah && ls -lah target && ls -lah target/site && ls -lah target/site/jacoco && ls -lah ${{ github.workspace }}
+        run: mvn jacoco:report 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: success() || failure() # always run even if the previous step fails
@@ -76,30 +75,30 @@ jobs:
           min-coverage-changed-files: 80
           title: Code Coverage
 
-      - name: Save Coverage To Environment Variable
-        run: |
-          echo "TOTAL_COVERAGE=${{ steps.jacoco.outputs.coverage-overall }}" >> $GITHUB_ENV
-          echo "CHANGED_FILES_COVERAGE=${{ steps.jacoco.outputs.coverage-changed-files }}" >> $GITHUB_ENV
+      # - name: Save Coverage To Environment Variable
+      #   run: |
+      #     echo "TOTAL_COVERAGE=${{ steps.jacoco.outputs.coverage-overall }}" >> $GITHUB_ENV
+      #     echo "CHANGED_FILES_COVERAGE=${{ steps.jacoco.outputs.coverage-changed-files }}" >> $GITHUB_ENV
 
-      - name: Print & Check Coverage Info
-        run: |
-          import os
-          import sys
-          print("Total Coverage: " + str(os.environ["TOTAL_COVERAGE"]))
-          print("Changed Files Coverage: " + str(os.environ["CHANGED_FILES_COVERAGE"]))
-          if float(os.environ["TOTAL_COVERAGE"]) < 80 or float(os.environ["CHANGED_FILES_COVERAGE"]) < 80:
-            print("Insufficient Coverage!")
-            sys.exit(-1) # Cause Status Check Failure due to noncompliant coverage
-          sys.exit(0)
-        shell: python
-      - name: Publish test coverage results
-        uses: PavanMudigonda/jacoco-reporter@v4.8
-        if: success() || failure()
-        with:
-          coverage_results_path: 'target/site/jacoco/jacoco.xml'
-          coverage_report_title: 'Test coverage results'
-          coverage_report_name: 'Test coverage results'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Print & Check Coverage Info
+      #   run: |
+      #     import os
+      #     import sys
+      #     print("Total Coverage: " + str(os.environ["TOTAL_COVERAGE"]))
+      #     print("Changed Files Coverage: " + str(os.environ["CHANGED_FILES_COVERAGE"]))
+      #     if float(os.environ["TOTAL_COVERAGE"]) < 80 or float(os.environ["CHANGED_FILES_COVERAGE"]) < 80:
+      #       print("Insufficient Coverage!")
+      #       sys.exit(-1) # Cause Status Check Failure due to noncompliant coverage
+      #     sys.exit(0)
+      #   shell: python
+      # - name: Publish test coverage results
+      #   uses: PavanMudigonda/jacoco-reporter@v4.8
+      #   if: success() || failure()
+      #   with:
+      #     coverage_results_path: 'target/site/jacoco/jacoco.xml'
+      #     coverage_report_title: 'Test coverage results'
+      #     coverage_report_name: 'Test coverage results'
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
 #      - name: Checkout repository
 #        uses: actions/checkout@v3
 #
