@@ -57,23 +57,23 @@ jobs:
         with:
           name: jacoco-report
           path: '**/target/site/jacoco/'
-      - name: Upload Report
-        uses: 'actions/upload-artifact@v2'
-        if: success() || failure()
-        with:
-          name: jacoco-report
-          path: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
+      # - name: Upload Report
+      #   uses: 'actions/upload-artifact@v2'
+      #   if: success() || failure()
+      #   with:
+      #     name: jacoco-report
+      #     path: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
 
-      - name: Add coverage to PR
-        id: jacoco
-        uses: madrapps/jacoco-report@v1.2
-        if: success() || failure()
-        with:
-          paths: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 80
-          min-coverage-changed-files: 80
-          title: Code Coverage
+      # - name: Add coverage to PR
+      #   id: jacoco
+      #   uses: madrapps/jacoco-report@v1.2
+      #   if: success() || failure()
+      #   with:
+      #     paths: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     min-coverage-overall: 80
+      #     min-coverage-changed-files: 80
+      #     title: Code Coverage
 
       # - name: Save Coverage To Environment Variable
       #   run: |
@@ -91,14 +91,14 @@ jobs:
       #       sys.exit(-1) # Cause Status Check Failure due to noncompliant coverage
       #     sys.exit(0)
       #   shell: python
-      # - name: Publish test coverage results
-      #   uses: PavanMudigonda/jacoco-reporter@v4.8
-      #   if: success() || failure()
-      #   with:
-      #     coverage_results_path: 'target/site/jacoco/jacoco.xml'
-      #     coverage_report_title: 'Test coverage results'
-      #     coverage_report_name: 'Test coverage results'
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish test coverage results
+        uses: PavanMudigonda/jacoco-reporter@v4.8
+        if: success() || failure()
+        with:
+          coverage_results_path: 'target/site/jacoco/jacoco.xml'
+          coverage_report_title: 'Test coverage results'
+          coverage_report_name: 'Test coverage results'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 #      - name: Checkout repository
 #        uses: actions/checkout@v3
 #
