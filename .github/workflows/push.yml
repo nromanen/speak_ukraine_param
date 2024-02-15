@@ -45,6 +45,7 @@ jobs:
         run: mvn clean test && mvn jacoco:report && pwd && ls -lah && ls -lah target/site/jacoco && ls -lah ${{ github.workspace }}
         
       - name: Build wDebug
+        if: success() || failure()
         run: pwd && ls -lah && ls -lah target/site/jacoco && ls -lah ${{ github.workspace }}
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
