@@ -54,7 +54,6 @@ jobs:
         with:
           name: jacoco-report
           path: ${{ github.workspace }}/target/site/jacoco/
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Report
         uses: 'actions/upload-artifact@v2'
         if: success() || failure()
