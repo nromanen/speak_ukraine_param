@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static utils.DBUtil.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class DBStructureSolution {
+class DBStructureSolutionTest {
     private static boolean allColumnsExists = false;
 
     @BeforeAll
