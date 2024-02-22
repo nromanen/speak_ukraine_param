@@ -13,9 +13,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static utils.DBUtil.*;
 
 class DBStructureTest {
+    private static boolean allColumnsExists = false;
 
     @BeforeAll
     public static void beforeAll() throws SQLException, IOException {
@@ -32,6 +34,7 @@ class DBStructureTest {
     void existColumn() throws SQLException {
         boolean actual = isColumnInTableExist("categories", "avatar");
         assertEquals(true, actual, "Column avatar in table categories doesn't exists");
+        allColumnsExists = true;
     }
 
     /*
@@ -44,10 +47,13 @@ class DBStructureTest {
     void existColumn(String tableName, String columnName) throws SQLException {
         boolean actual = isColumnInTableExist(tableName, columnName);
         assertEquals(true, actual, "Column " + columnName + " in table " + tableName + " doesn't exists");
+        allColumnsExists = true;
     }*/
 
     @Test
     void columnType() throws SQLException {
+        assumeTrue(allColumnsExists, "Skipping test for column type because the test for presence column failed.");
+
         String expected = "character varying";
         String actual = getColumnType("categories", "avatar");
         assertEquals(expected, actual, String.format("Type for column %s should be %s", "avatar", expected));
@@ -100,8 +106,8 @@ class DBStructureTest {
 
     @Test
     void checkUnique() throws SQLException {
-        List<String> actual = getUnique("club");
-        assertTrue(actual.contains("title"), "Column title in table club should be unique");
+        List<String> actual = getUnique("clubs");
+        assertTrue(actual.contains("title"), "Column title in table clubs should be unique");
     }
 
 }
