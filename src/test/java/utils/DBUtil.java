@@ -1,14 +1,14 @@
 package utils;
 
-import model.Category;
+import database.Util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+
 
 public class DBUtil {
     public static Connection getConnection() throws SQLException {
@@ -19,14 +19,6 @@ public class DBUtil {
     public static int executeStatement(String query) throws SQLException {
         Statement st = getConnection().createStatement();
         return st.executeUpdate(query);
-    }
-
-    public static int totalCount(String tableName) throws SQLException {
-        String query = "SELECT count(*) FROM " + tableName;
-        Statement statement = getConnection().createStatement();
-        ResultSet rs = statement.executeQuery(query);
-        rs.next();
-        return rs.getInt(1);
     }
 
     public void executeFile(String path) throws IOException, SQLException {
@@ -73,5 +65,52 @@ public class DBUtil {
             }
 
         }
+    }
+
+    public static boolean isTableExist(String tableName) throws SQLException {
+        return Util.executeQueryOneBoolean("SELECT EXISTS (\n" +
+                "            SELECT 1 FROM pg_tables\n" +
+                "            WHERE tablename = '" + tableName + "');");
+    }
+
+    public static String getColumnType(String tableName, String columnName) throws SQLException {
+        return Util.executeQueryOneString(String.format("SELECT pg_typeof(%s) FROM %s LIMIT 1", columnName, tableName));
+    }
+
+    public static String getPK(String tableName) throws SQLException {
+        return Util.executeQueryOneString(String.format("SELECT pg_attribute.attname\n" +
+                "    FROM pg_class, pg_attribute, pg_index\n" +
+                "    WHERE pg_class.oid = pg_attribute.attrelid AND\n" +
+                "    pg_class.oid = pg_index.indrelid AND\n" +
+                "    pg_index.indkey[0] = pg_attribute.attnum AND\n" +
+                "    pg_index.indisprimary = 't' and pg_class.relname = '%s';", tableName));
+    }
+
+    public static List<String> getFKs(java.lang.String tableName) throws SQLException {
+        return Util.executeQueryListString(java.lang.String.format("SELECT pg_catalog.pg_get_constraintdef(r.oid, true) as condef\n" +
+                "FROM pg_catalog.pg_constraint r\n" +
+                "WHERE r.conrelid = '%s'::regclass AND r.contype = 'f' ORDER BY 1", tableName));
+    }
+
+    public static java.util.List<String> getNotNull(String tableName) throws SQLException {
+        return Util.executeQueryListString(String.format("SELECT column_name FROM information_schema.columns\n" +
+                "WHERE is_nullable = 'NO' and table_name = '%s';", tableName));
+    }
+
+    public static List<String> getUnique(String tableName) throws SQLException {
+        return Util.executeQueryListString(String.format("SELECT column_name\n" +
+                "    FROM information_schema.constraint_column_usage\n" +
+                "    WHERE table_name = '%s'\n" +
+                "    AND constraint_name IN (\n" +
+                "            SELECT constraint_name\n" +
+                "    FROM information_schema.table_constraints\n" +
+                "            WHERE constraint_type = 'UNIQUE'\n" +
+                "    );", tableName));
+    }
+
+    public static boolean isColumnInTableExist(String tableName, String columnName) throws SQLException {
+        return Util.executeQueryOneBoolean("SELECT EXISTS (SELECT 1\n" +
+                "               FROM information_schema.columns\n" +
+                "               WHERE table_schema='public' AND table_name='" + tableName + "' AND column_name='" + columnName + "');");
     }
 }
