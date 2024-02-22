@@ -71,7 +71,7 @@ class DBStructureTest {
     @Test
     void checkFKs() throws SQLException {
         List<String> actual = getFKs("club_child");
-        List<String> expected = List.of("REFERENCES child", "REFERENCES club");
+        List<String> expected = List.of("REFERENCES child", "REFERENCES clubs");
         SoftAssertions assertions = new SoftAssertions();
         expected.forEach(outer -> assertions.assertThat(actual.stream().anyMatch(e -> e.contains(outer)))
                 .withFailMessage(String.format("Table %s should contain FK with %s", "club_child", outer))

@@ -73,8 +73,8 @@ class DBStructureSolutionTest {
 
     private static Stream<Arguments> checkFKs() {
         return Stream.of(
-                Arguments.of("club_child", List.of("REFERENCES child", "REFERENCES club")),
-                Arguments.of("club", List.of("REFERENCES categories")
+                Arguments.of("club_child", List.of("REFERENCES child", "REFERENCES clubs")),
+                Arguments.of("clubs", List.of("REFERENCES categories")
                 )
         );
     }
