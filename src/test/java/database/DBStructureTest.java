@@ -1,8 +1,7 @@
 package database;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static utils.DBUtil.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DBStructureTest {
     private static boolean allColumnsExists = false;
 
@@ -31,6 +31,7 @@ class DBStructureTest {
     }
 
     @Test
+    @Order(1)
     void existColumn() throws SQLException {
         boolean actual = isColumnInTableExist("categories", "avatar");
         assertEquals(true, actual, "Column avatar in table categories doesn't exists");
@@ -51,6 +52,7 @@ class DBStructureTest {
     }*/
 
     @Test
+    @Order(2)
     void columnType() throws SQLException {
         assumeTrue(allColumnsExists, "Skipping test for column type because the test for presence column failed.");
 
@@ -68,12 +70,11 @@ class DBStructureTest {
 
     @Test
     void checkFKs() throws SQLException {
-        String tableName = "club_child";
-        List<String> actual = getFKs(tableName);
+        List<String> actual = getFKs("club_child");
         List<String> expected = List.of("REFERENCES child", "REFERENCES club");
         SoftAssertions assertions = new SoftAssertions();
         expected.forEach(outer -> assertions.assertThat(actual.stream().anyMatch(e -> e.contains(outer)))
-                .withFailMessage(String.format("Table %s should contain FK with %s", tableName, outer))
+                .withFailMessage(String.format("Table %s should contain FK with %s", "club_child", outer))
                 .isTrue());
         assertions.assertAll();
 
@@ -95,10 +96,10 @@ class DBStructureTest {
 
     /*
     Replace test checkNotNull() with this method checkNotNull(String, String).
-    Provide more values to @CsvSource for chicking all not value column in tables
+    Provide more values to @CsvSource for chеck all not null column in tables
 
     @ParameterizedTest
-    @CsvSource({"categories,title", "categories, avatar", "children, first_name", "children, last_name", "club, title"})
+    @CsvSource({"categories,title", "categories, avatar", "children, first_name", "children, last_name", "clubs, title"})
     void checkNotNull(String tableName, String columnName) throws SQLException {
         List<String> actual = getNotNull(tableName);
         assertTrue(actual.contains(columnName), String.format("Column %s in table %s should be not null", columnName, tableName));
